@@ -1,0 +1,786 @@
+<!-- ... existing code ... -->
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#7C3AED',
+                            pink: '#EC4899',
+                            yellow: '#F59E0B',
+                            green: '#10B981',
+                            blue: '#3B82F6',
+                            cyan: '#06B6D4'
+                        }
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #3b82f6 100%);
+            min-height: 100vh;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            border: 4px solid rgba(255, 255, 255, 0.6);
+        }
+        .btn-bounce {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+        }
+        .btn-bounce:hover {
+            transform: scale(1.05) translateY(-3px);
+        }
+        .btn-bounce:active {
+            transform: scale(0.95) translateY(2px);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7C3AED;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-3 sm:p-6 min-h-screen text-gray-800 relative overflow-x-hidden">
+
+    <!-- Floating Background Decor Elements -->
+    <div class="fixed top-10 left-10 text-white/20 text-6xl font-heading floating pointer-events-none select-none">+1</div>
+    <div class="fixed top-1/4 right-10 text-white/20 text-7xl font-heading floating pointer-events-none select-none" style="animation-delay: 1s;">+5</div>
+    <div class="fixed bottom-10 left-1/5 text-white/20 text-6xl font-heading floating pointer-events-none select-none" style="animation-delay: 1.5s;">+10</div>
+    <div class="fixed bottom-20 right-1/4 text-white/20 text-7xl font-heading floating pointer-events-none select-none" style="animation-delay: 0.5s;">=20</div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="w-full max-w-4xl mx-auto z-10">
+
+        <!-- 1. START / SPLASH SCREEN -->
+        <div id="screen-splash" class="glass-card rounded-3xl p-6 sm:p-12 text-center shadow-2xl relative overflow-hidden transition-all duration-500">
+            <div class="inline-block bg-yellow-400 text-yellow-900 font-heading text-sm sm:text-base px-4 py-1.5 rounded-full mb-4 shadow-md font-bold tracking-wide">
+                <i class="fa-solid fa-star mr-1"></i> Khusus Penjumlahan Angka 1 sampai 20
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 mb-2 leading-tight">
+                MATH PLAY 🧮
+            </h1>
+            <p class="text-purple-900 text-xl sm:text-3xl font-bold mb-8">Penjumlahan 1 - 20</p>
+            
+            <!-- Hero Illustration -->
+            <div class="my-6 relative flex justify-center items-center">
+                <div class="w-44 h-44 sm:w-56 sm:h-56 bg-gradient-to-tr from-yellow-300 via-pink-400 to-purple-500 rounded-full flex items-center justify-center shadow-inner floating">
+                    <span class="text-7xl sm:text-8xl">🍎</span>
+                </div>
+            </div>
+
+            <button onclick="switchScreen('screen-menu'); playSound('click')" class="btn-bounce bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white font-heading text-2xl sm:text-3xl px-10 py-5 rounded-full shadow-lg hover:shadow-2xl border-4 border-white transition flex items-center justify-center gap-3 mx-auto">
+                <i class="fa-solid fa-circle-play"></i> MULAI SEKARANG
+            </button>
+        </div>
+
+        <!-- 2. MAIN MENU SCREEN -->
+        <div id="screen-menu" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-2xl transition-all duration-500">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 border-b-2 border-gray-100 pb-4">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-heading text-purple-800 flex items-center gap-2">
+                        <span>🎯</span> Menu Utama
+                    </h2>
+                    <p class="text-gray-600">Pilih menu belajar atau bermain penjumlahan 1-20</p>
+                </div>
+                <button onclick="switchScreen('screen-splash'); playSound('click')" class="text-gray-500 hover:text-red-500 font-bold flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-red-50 transition">
+                    <i class="fa-solid fa-house"></i> Beranda
+                </button>
+            </div>
+
+            <!-- Menu Grid Options -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Card 1: Materi -->
+                <div onclick="switchScreen('screen-materi'); playSound('click')" class="btn-bounce bg-gradient-to-br from-blue-400 to-indigo-600 p-6 rounded-2xl text-white shadow-xl cursor-pointer relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 text-8xl text-white/20 group-hover:scale-110 transition">🍎</div>
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-3xl mb-4 backdrop-blur-sm">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-heading mb-1">1. Materi</h3>
+                    <p class="text-blue-100 text-sm">Konsep penjumlahan 1-20 dengan objek visual & garis bilangan.</p>
+                </div>
+
+                <!-- Card 2: Penjelasan Guru -->
+                <div onclick="switchScreen('screen-guru'); playSound('click')" class="btn-bounce bg-gradient-to-br from-pink-400 to-purple-600 p-6 rounded-2xl text-white shadow-xl cursor-pointer relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 text-8xl text-white/20 group-hover:scale-110 transition">👩‍🏫</div>
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-3xl mb-4 backdrop-blur-sm">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-heading mb-1">2. Penjelasan Guru</h3>
+                    <p class="text-pink-100 text-sm">Teknik hitung maju & kelompok 10 bersuara bersama Bu Guru Ani.</p>
+                </div>
+
+                <!-- Card 3: Latihan -->
+                <div onclick="switchScreen('screen-latihan'); loadPracticeProblem(); playSound('click')" class="btn-bounce bg-gradient-to-br from-amber-400 to-orange-500 p-6 rounded-2xl text-white shadow-xl cursor-pointer relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 text-8xl text-white/20 group-hover:scale-110 transition">📝</div>
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-3xl mb-4 backdrop-blur-sm">
+                        <i class="fa-solid fa-pen-ruler"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-heading mb-1">3. Latihan Soal</h3>
+                    <p class="text-amber-100 text-sm">Latihan penjumlahan 1-20 santai dengan petunjuk bantuan visual.</p>
+                </div>
+
+                <!-- Card 4: Game -->
+                <div onclick="switchScreen('screen-game-select'); playSound('click')" class="btn-bounce bg-gradient-to-br from-emerald-400 to-green-600 p-6 rounded-2xl text-white shadow-xl cursor-pointer relative overflow-hidden group">
+                    <div class="absolute -right-6 -bottom-6 text-8xl text-white/20 group-hover:scale-110 transition">🎮</div>
+                    <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-3xl mb-4 backdrop-blur-sm">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-heading mb-1">4. Game Penjumlahan</h3>
+                    <p class="text-emerald-100 text-sm">Tantangan hitung cepat penjumlahan 1-20 dengan nyawa & skor!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SCREEN MATERI -->
+        <div id="screen-materi" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-heading text-blue-700 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open"></i> Materi Penjumlahan 1 - 20
+                </h2>
+                <button onclick="switchScreen('screen-menu'); playSound('click')" class="btn-bounce bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2 rounded-xl transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <!-- Tab Navigation for Topics -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="showMateriTab('objek')" id="tab-materi-objek" class="materi-tab px-4 py-2 rounded-xl font-bold bg-blue-600 text-white shadow">🍎 1. Hitung Objek</button>
+                <button onclick="showMateriTab('garis')" id="tab-materi-garis" class="materi-tab px-4 py-2 rounded-xl font-bold bg-gray-200 text-gray-700 hover:bg-gray-300">📏 2. Garis Bilangan</button>
+                <button onclick="showMateriTab('sepuluh')" id="tab-materi-sepuluh" class="materi-tab px-4 py-2 rounded-xl font-bold bg-gray-200 text-gray-700 hover:bg-gray-300">📦 3. Pasangan 10</button>
+            </div>
+
+            <!-- Content Area -->
+            <div id="materi-content" class="bg-white/90 rounded-2xl p-6 border-2 border-blue-100">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- 4. SCREEN PENJELASAN GURU -->
+        <div id="screen-guru" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-heading text-purple-700 flex items-center gap-2">
+                    <i class="fa-solid fa-chalkboard-user"></i> Penjelasan Bu Guru Ani
+                </h2>
+                <button onclick="switchScreen('screen-menu'); playSound('click')" class="btn-bounce bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2 rounded-xl transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Teacher Avatar & Control -->
+                <div class="bg-purple-100 rounded-2xl p-5 border-2 border-purple-200 text-center flex flex-col items-center justify-between">
+                    <div>
+                        <div class="w-32 h-32 bg-purple-300 rounded-full flex items-center justify-center text-6xl shadow-inner mb-3 mx-auto relative">
+                            <span>👩‍🏫</span>
+                            <span class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></span>
+                        </div>
+                        <h3 class="font-heading text-xl text-purple-900">Bu Guru Ani</h3>
+                        <p class="text-xs text-purple-600 mb-4">Pakar Penjumlahan 1-20</p>
+                    </div>
+
+                    <div class="w-full space-y-2">
+                        <label class="block text-left text-xs font-bold text-gray-600">Pilih Topik Penjelasan:</label>
+                        <select id="teacher-topic-select" onchange="updateTeacherLesson()" class="w-full bg-white border-2 border-purple-300 rounded-xl px-3 py-2 font-bold text-purple-800 outline-none">
+                            <option value="hitung-maju">1. Teknik Hitung Maju (7 + 5)</option>
+                            <option value="kelompok-10">2. Teknik Membuat Kelompok 10 (8 + 6)</option>
+                            <option value="penjumlahan-kembar">3. Penjumlahan Kembar (6 + 6, 7 + 7)</option>
+                        </select>
+                        <button onclick="speakTeacherLesson()" class="w-full btn-bounce bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-xl shadow flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-volume-high"></i> Dengarkan Suara Guru
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Whiteboard -->
+                <div class="md:col-span-2 bg-slate-800 rounded-2xl p-6 text-white border-4 border-amber-800 shadow-2xl flex flex-col justify-between relative min-h-[320px]">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-4">
+                        <span class="text-yellow-400 font-heading text-sm"><i class="fa-solid fa-chalkboard mr-1"></i> Papan Tulis Kelas</span>
+                        <span id="lesson-step-tag" class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">Langkah 1/3</span>
+                    </div>
+
+                    <div id="whiteboard-text" class="space-y-4 my-auto">
+                        <!-- Dynamically filled -->
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-700 mt-4">
+                        <button onclick="changeLessonStep(-1)" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-bold transition">
+                            <i class="fa-solid fa-chevron-left mr-1"></i> Sebelumnya
+                        </button>
+                        <button onclick="changeLessonStep(1)" class="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-slate-900 rounded-lg text-xs font-bold transition">
+                            Selanjutnya <i class="fa-solid fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. SCREEN LATIHAN -->
+        <div id="screen-latihan" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-heading text-amber-600 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-ruler"></i> Latihan Penjumlahan (1-20)
+                </h2>
+                <button onclick="switchScreen('screen-menu'); playSound('click')" class="btn-bounce bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2 rounded-xl transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl p-6 sm:p-8 shadow-md border-2 border-amber-200">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-xs">Modus Santai</span>
+                    <span id="practice-score" class="text-amber-600 font-bold">Terjawab Benar: 0</span>
+                </div>
+
+                <!-- Visual Objects Help -->
+                <div id="practice-visuals" class="flex flex-wrap justify-center gap-2 my-4 bg-amber-50 p-4 rounded-xl border border-amber-200">
+                    <!-- Dynamic Icons -->
+                </div>
+
+                <!-- Question Box -->
+                <div class="text-center my-6">
+                    <div id="practice-question" class="text-4xl sm:text-5xl font-heading text-gray-800 tracking-wide mb-6">
+                        7 + 6 = ?
+                    </div>
+
+                    <!-- Multiple Choice Options -->
+                    <div id="practice-options" class="grid grid-cols-2 gap-4">
+                        <!-- Dynamic Buttons -->
+                    </div>
+                </div>
+
+                <!-- Feedback & Hint Box -->
+                <div id="practice-feedback" class="hidden p-4 rounded-xl text-center font-bold mb-4"></div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <button onclick="showPracticeHint()" class="text-amber-600 hover:text-amber-700 text-sm font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-lightbulb"></i> Petunjuk Hitung
+                    </button>
+                    <button onclick="loadPracticeProblem()" class="btn-bounce bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl shadow transition">
+                        Soal Berikutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. SCREEN GAME SELECTION -->
+        <div id="screen-game-select" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-heading text-emerald-700 flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad"></i> Game Penjumlahan 1 - 20
+                </h2>
+                <button onclick="switchScreen('screen-menu'); playSound('click')" class="btn-bounce bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2 rounded-xl transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="text-center max-w-xl mx-auto space-y-6">
+                <h3 class="text-2xl font-bold text-gray-700">Pilih Tingkat Kesulitan:</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <button onclick="setDifficulty('easy')" id="diff-easy" class="diff-btn p-4 rounded-2xl bg-emerald-500 text-white font-bold text-lg shadow border-2 border-emerald-600">
+                        ⭐ Mudah<br><span class="text-xs font-normal">Hasil Maksimal 10</span>
+                    </button>
+                    <button onclick="setDifficulty('medium')" id="diff-medium" class="diff-btn p-4 rounded-2xl bg-gray-200 text-gray-700 font-bold text-lg">
+                        ⭐⭐ Sedang<br><span class="text-xs font-normal">Hasil Maksimal 15</span>
+                    </button>
+                    <button onclick="setDifficulty('hard')" id="diff-hard" class="diff-btn p-4 rounded-2xl bg-gray-200 text-gray-700 font-bold text-lg">
+                        ⭐⭐⭐ Sulit<br><span class="text-xs font-normal">Hasil Maksimal 20</span>
+                    </button>
+                </div>
+
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-left text-sm text-emerald-800">
+                    <p class="font-bold mb-1"><i class="fa-solid fa-circle-info mr-1"></i> Aturan Main:</p>
+                    <ul class="list-disc list-inside space-y-1 text-emerald-700">
+                        <li>Jawab soal penjumlahan secepat mungkin sebelum waktu habis!</li>
+                        <li>Kamu memiliki 3 Hati (nyawa).</li>
+                        <li>Setiap jawaban benar menambah +10 Poin.</li>
+                    </ul>
+                </div>
+
+                <button onclick="startGame()" class="w-full btn-bounce bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-heading text-2xl py-4 rounded-2xl shadow-xl border-2 border-white">
+                    🚀 MULAI GAME!
+                </button>
+            </div>
+        </div>
+
+        <!-- 7. SCREEN GAMEPLAY -->
+        <div id="screen-gameplay" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-2xl">
+            <!-- Game HUD Header -->
+            <div class="flex justify-between items-center mb-6 bg-white/60 p-4 rounded-2xl border border-white">
+                <!-- Hearts / Lives -->
+                <div class="flex items-center gap-1 text-2xl text-red-500" id="game-lives">
+                    <i class="fa-solid fa-heart"></i>
+                    <i class="fa-solid fa-heart"></i>
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+
+                <!-- Timer -->
+                <div class="flex items-center gap-2 font-heading text-xl bg-amber-100 text-amber-800 px-4 py-1.5 rounded-full border border-amber-300">
+                    <i class="fa-solid fa-clock"></i> <span id="game-timer">30</span>s
+                </div>
+
+                <!-- Score -->
+                <div class="font-heading text-xl text-purple-800">
+                    Skor: <span id="game-score" class="text-2xl font-bold text-emerald-600">0</span>
+                </div>
+            </div>
+
+            <!-- Game Arena -->
+            <div class="text-center my-8">
+                <div class="text-sm font-bold text-gray-500 mb-2">Berapakah Hasil Penjumlahan Ini?</div>
+                <div id="game-question" class="text-5xl sm:text-6xl font-heading text-purple-900 mb-8 tracking-wider">
+                    8 + 7 = ?
+                </div>
+
+                <div id="game-options" class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                    <!-- Dynamic Options -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. SCREEN GAME OVER -->
+        <div id="screen-game-over" class="hidden glass-card rounded-3xl p-6 sm:p-10 text-center shadow-2xl">
+            <div id="game-over-icon" class="text-7xl mb-2">🏆</div>
+            <h2 id="game-over-title" class="text-4xl font-heading text-purple-800 mb-2">Permainan Selesai!</h2>
+            <p id="game-over-msg" class="text-gray-600 font-bold mb-6">Kamu hebat sekali dalam penjumlahan!</p>
+
+            <div class="bg-white/80 rounded-2xl p-6 max-w-sm mx-auto shadow-inner mb-6 border-2 border-purple-100">
+                <div class="flex justify-between py-2 border-b border-gray-200">
+                    <span class="text-gray-600">Total Skor Penjumlahan:</span>
+                    <span id="final-score" class="font-bold text-2xl text-emerald-600">0</span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span class="text-gray-600">Tingkat Akurasi:</span>
+                    <span id="final-accuracy" class="font-bold text-xl text-purple-600">100%</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+                <button onclick="switchScreen('screen-game-select'); playSound('click')" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-2xl shadow">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Main Lagi
+                </button>
+                <button onclick="switchScreen('screen-menu'); playSound('click')" class="btn-bounce bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-2xl">
+                    <i class="fa-solid fa-house mr-1"></i> Menu Utama
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ==========================================
+        // 1. SOUND EFFECTS (Web Audio API)
+        // ==========================================
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(140, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            }
+        }
+
+        // ==========================================
+        // 2. NAVIGATION & SCREEN SWITCHING
+        // ==========================================
+        const screens = [
+            'screen-splash', 'screen-menu', 'screen-materi', 
+            'screen-guru', 'screen-latihan', 'screen-game-select', 
+            'screen-gameplay', 'screen-game-over'
+        ];
+
+        function switchScreen(targetId) {
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (id === targetId) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+
+            if (targetId === 'screen-materi') showMateriTab('objek');
+            if (targetId === 'screen-guru') updateTeacherLesson();
+        }
+
+        // ==========================================
+        // 3. MATERI SECTION LOGIC (PENJUMLAHAN 1-20)
+        // ==========================================
+        const materiData = {
+            objek: {
+                title: "1. Menghitung Objek Ceria 🍎",
+                desc: "Penjumlahan 1 sampai 20 berarti menggabungkan dua kelompok benda lalu menghitung total semuanya.",
+                example: "5 Apel 🍎 + 4 Apel 🍎 = 9 Apel 🍎",
+                visual: "🍎🍎🍎🍎🍎 + 🍎🍎🍎🍎 = 🍎🍎🍎🍎🍎🍎🍎🍎🍎",
+                tips: "Tips: Hitunglah semua gambar objek satu per satu dari kiri ke kanan!"
+            },
+            garis: {
+                title: "2. Garis Bilangan 📏",
+                desc: "Garis bilangan membantu kita menghitung maju untuk penjumlahan angka yang lebih besar dari 10.",
+                example: "8 + 5 = 13",
+                visual: "[8] ➔ +1 (9) ➔ +1 (10) ➔ +1 (11) ➔ +1 (12) ➔ +1 (13)",
+                tips: "Tips: Mulai dari angka terbesar (8), lalu melompat maju sebanyak 5 kali!"
+            },
+            sepuluh: {
+                title: "3. Membuat Kelompok 10 📦",
+                desc: "Trik cepat penjumlahan 1-20 adalah membuat angka pertama menjadi 10 terlebih dahulu.",
+                example: "8 + 5 ➔ (8 + 2) + 3 = 10 + 3 = 13",
+                visual: "📦 (10 Apel) + 🍎🍎🍎 (3 Apel) = 13 Apel",
+                tips: "Tips: Ingatlah pasangan 10! (9+1, 8+2, 7+3, 6+4, 5+5)."
+            }
+        };
+
+        function showMateriTab(tabKey) {
+            document.querySelectorAll('.materi-tab').forEach(btn => {
+                btn.className = 'materi-tab px-4 py-2 rounded-xl font-bold bg-gray-200 text-gray-700 hover:bg-gray-300';
+            });
+            document.getElementById(`tab-materi-${tabKey}`).className = 'materi-tab px-4 py-2 rounded-xl font-bold bg-blue-600 text-white shadow';
+
+            const data = materiData[tabKey];
+            document.getElementById('materi-content').innerHTML = `
+                <h3 class="text-2xl font-bold font-heading text-blue-900 mb-2">${data.title}</h3>
+                <p class="text-gray-700 text-base mb-4 leading-relaxed">${data.desc}</p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl mb-4">
+                    <div class="font-bold text-blue-900 text-sm mb-1">Contoh Penjumlahan:</div>
+                    <div class="text-xl font-bold text-blue-800 mb-2">${data.example}</div>
+                    <div class="bg-white/80 p-3 rounded-lg font-mono text-purple-800 font-bold border border-blue-200">${data.visual}</div>
+                </div>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-xl">
+                    <div class="font-bold text-yellow-900 text-sm mb-1">💡 Tips Pintar:</div>
+                    <div class="text-gray-700">${data.tips}</div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 4. PENJELASAN GURU LOGIC (PENJUMLAHAN 1-20)
+        // ==========================================
+        const teacherLessons = {
+            'hitung-maju': {
+                steps: [
+                    { text: "Halo anak-anak! Mari kita pelajari teknik Hitung Maju untuk 7 + 5.", board: "Soal: 7 + 5 = ?\n\nManakah angka yang lebih besar?" },
+                    { text: "Angka yang lebih besar adalah 7. Simpan 7 di dalam pikiranmu!", board: "Pikiran: [ 7 ]\nJari tangan: Simpan 5 jari ✋" },
+                    { text: "Hitung maju 5 kali setelah 7: 8, 9, 10, 11, 12! Jadi 7 + 5 = 12.", board: "7 ➔ 8 ➔ 9 ➔ 10 ➔ 11 ➔ 12 ✨\n\nHasil: 12!" }
+                ]
+            },
+            'kelompok-10': {
+                steps: [
+                    { text: "Sekarang mari gunakan Rahasia Kelompok 10 untuk menghitung 8 + 6.", board: "Soal: 8 + 6 = ?\n\nBerapa lagi agar 8 menjadi 10?" },
+                    { text: "8 butuh 2 lagi untuk jadi 10. Kita pinjam 2 dari angka 6!", board: "Angka 6 dipecah menjadi: (2 + 4)\n\n(8 + 2) + 4" },
+                    { text: "8 + 2 = 10. Lalu 10 + 4 = 14! Sangat mudah bukan?", board: "10 + 4 = 14 🌟\n\nHasil: 14!" }
+                ]
+            },
+            'penjumlahan-kembar': {
+                steps: [
+                    { text: "Menghitung angka kembar sangat menyenangkan!", board: "Angka Kembar:\n6 + 6 = 12\n7 + 7 = 14\n8 + 8 = 16" },
+                    { text: "Jika kamu tahu 7 + 7 = 14, maka 7 + 8 tinggal menambah 1 saja!", board: "7 + 8 = (7 + 7) + 1\n= 14 + 1" },
+                    { text: "Hasilnya adalah 15! Mengingat angka kembar membuatmu makin cepat.", board: "7 + 8 = 15 🎉\n\nKamu luar biasa!" }
+                ]
+            }
+        };
+
+        let currentLessonKey = 'hitung-maju';
+        let currentLessonStep = 0;
+
+        function updateTeacherLesson() {
+            currentLessonKey = document.getElementById('teacher-topic-select').value;
+            currentLessonStep = 0;
+            renderLessonStep();
+        }
+
+        function changeLessonStep(dir) {
+            const max = teacherLessons[currentLessonKey].steps.length - 1;
+            currentLessonStep += dir;
+            if (currentLessonStep < 0) currentLessonStep = 0;
+            if (currentLessonStep > max) currentLessonStep = max;
+            renderLessonStep();
+        }
+
+        function renderLessonStep() {
+            const lesson = teacherLessons[currentLessonKey].steps[currentLessonStep];
+            document.getElementById('whiteboard-text').innerHTML = `
+                <div class="text-xl font-heading text-yellow-300 mb-2">${lesson.text}</div>
+                <div class="text-2xl font-mono whitespace-pre-line bg-slate-900/60 p-4 rounded-xl text-emerald-300 border border-slate-700">${lesson.board}</div>
+            `;
+            document.getElementById('lesson-step-tag').innerText = `Langkah ${currentLessonStep + 1}/${teacherLessons[currentLessonKey].steps.length}`;
+        }
+
+        function speakTeacherLesson() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const lesson = teacherLessons[currentLessonKey].steps[currentLessonStep];
+                const utterance = new SpeechSynthesisUtterance(lesson.text);
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Fitur suara tidak didukung di browser ini.");
+            }
+        }
+
+        // ==========================================
+        // 5. LATIHAN SOAL LOGIC (PENJUMLAHAN 1-20)
+        // ==========================================
+        let practiceCurrent = {};
+        let practiceCorrectCount = 0;
+
+        function loadPracticeProblem() {
+            document.getElementById('practice-feedback').classList.add('hidden');
+            
+            // Limit addition result between 2 and 20
+            let numA = Math.floor(Math.random() * 10) + 1; // 1 - 10
+            let numB = Math.floor(Math.random() * 10) + 1; // 1 - 10
+            let ans = numA + numB;
+
+            practiceCurrent = { numA, numB, ans };
+
+            document.getElementById('practice-question').innerText = `${numA} + ${numB} = ?`;
+
+            // Visual icons hint
+            const vis = document.getElementById('practice-visuals');
+            vis.innerHTML = '';
+            const icons = ['⭐', '🍎', '🎈', '🍬', '🍪'];
+            const chosenIcon = icons[Math.floor(Math.random() * icons.length)];
+            
+            let htmlA = `<span class="font-bold text-amber-800 mr-1">${numA}:</span>`;
+            for(let i=0; i<numA; i++) htmlA += chosenIcon;
+            
+            let htmlB = `<span class="font-bold text-amber-800 ml-3 mr-1">+ ${numB}:</span>`;
+            for(let i=0; i<numB; i++) htmlB += chosenIcon;
+
+            vis.innerHTML = `<div class="text-lg">${htmlA} ${htmlB}</div>`;
+
+            // Dynamic Options
+            const options = [ans];
+            while (options.length < 4) {
+                let wrong = ans + (Math.floor(Math.random() * 7) - 3);
+                if (wrong >= 1 && wrong <= 20 && !options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const optContainer = document.getElementById('practice-options');
+            optContainer.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-bounce bg-amber-50 hover:bg-amber-100 border-2 border-amber-300 text-amber-900 font-heading text-2xl py-3 rounded-xl transition';
+                btn.innerText = opt;
+                btn.onclick = () => checkPracticeAnswer(opt);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkPracticeAnswer(selected) {
+            const fb = document.getElementById('practice-feedback');
+            fb.classList.remove('hidden');
+            if (selected === practiceCurrent.ans) {
+                playSound('correct');
+                practiceCorrectCount++;
+                document.getElementById('practice-score').innerText = `Terjawab Benar: ${practiceCorrectCount}`;
+                fb.className = 'p-4 rounded-xl text-center font-bold mb-4 bg-emerald-100 text-emerald-800 border border-emerald-300';
+                fb.innerHTML = `🎉 Jawabanmu Benar! ${practiceCurrent.numA} + ${practiceCurrent.numB} = ${practiceCurrent.ans}`;
+            } else {
+                playSound('wrong');
+                fb.className = 'p-4 rounded-xl text-center font-bold mb-4 bg-red-100 text-red-800 border border-red-300';
+                fb.innerHTML = `❌ Kurang Tepat. ${practiceCurrent.numA} + ${practiceCurrent.numB} adalah ${practiceCurrent.ans}. Coba hitung lagi ya!`;
+            }
+        }
+
+        function showPracticeHint() {
+            const fb = document.getElementById('practice-feedback');
+            fb.classList.remove('hidden');
+            fb.className = 'p-4 rounded-xl text-center font-bold mb-4 bg-blue-100 text-blue-800 border border-blue-300';
+            fb.innerHTML = `💡 Petunjuk: Simpan angka ${Math.max(practiceCurrent.numA, practiceCurrent.numB)} di kepalamu, lalu hitung maju sebanyak ${Math.min(practiceCurrent.numA, practiceCurrent.numB)} jari!`;
+        }
+
+        // ==========================================
+        // 6. GAME LOGIC (PENJUMLAHAN 1-20)
+        // ==========================================
+        let gameDifficulty = 'easy'; // easy (max 10), medium (max 15), hard (max 20)
+        let gameScore = 0;
+        let gameLives = 3;
+        let gameTimer = 30;
+        let timerInterval = null;
+        let currentProblem = {};
+        let totalQuestions = 0;
+        let correctQuestions = 0;
+
+        function setDifficulty(diff) {
+            gameDifficulty = diff;
+            playSound('click');
+            document.querySelectorAll('.diff-btn').forEach(b => {
+                b.className = 'diff-btn p-4 rounded-2xl bg-gray-200 text-gray-700 font-bold text-lg';
+            });
+            document.getElementById(`diff-${diff}`).className = 'diff-btn p-4 rounded-2xl bg-emerald-500 text-white font-bold text-lg shadow border-2 border-emerald-600';
+        }
+
+        function startGame() {
+            switchScreen('screen-gameplay');
+            gameScore = 0;
+            gameLives = 3;
+            totalQuestions = 0;
+            correctQuestions = 0;
+            updateHUD();
+            nextGameQuestion();
+
+            gameTimer = gameDifficulty === 'easy' ? 35 : gameDifficulty === 'medium' ? 30 : 25;
+            document.getElementById('game-timer').innerText = gameTimer;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                gameTimer--;
+                document.getElementById('game-timer').innerText = gameTimer;
+                if (gameTimer <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateHUD() {
+            document.getElementById('game-score').innerText = gameScore;
+            const hearts = Array(gameLives).fill('<i class="fa-solid fa-heart"></i>').join(' ');
+            const emptyHearts = Array(3 - gameLives).fill('<i class="fa-regular fa-heart text-gray-300"></i>').join(' ');
+            document.getElementById('game-lives').innerHTML = hearts + ' ' + emptyHearts;
+        }
+
+        function generateAdditionProblem() {
+            let maxResult = gameDifficulty === 'easy' ? 10 : gameDifficulty === 'medium' ? 15 : 20;
+            let a = Math.floor(Math.random() * (maxResult - 1)) + 1;
+            let b = Math.floor(Math.random() * (maxResult - a)) + 1; // ensures a + b <= maxResult
+
+            return { questionText: `${a} + ${b} = ?`, ans: a + b };
+        }
+
+        function nextGameQuestion() {
+            currentProblem = generateAdditionProblem();
+            document.getElementById('game-question').innerText = currentProblem.questionText;
+
+            // Options
+            const opts = [currentProblem.ans];
+            while (opts.length < 4) {
+                let delta = (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+                let w = currentProblem.ans + delta;
+                if (w >= 1 && w <= 20 && !opts.includes(w)) {
+                    opts.push(w);
+                }
+            }
+            opts.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('game-options');
+            container.innerHTML = '';
+            opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-bounce bg-white hover:bg-emerald-50 border-4 border-emerald-300 text-emerald-900 font-heading text-3xl py-4 rounded-2xl shadow-md transition';
+                btn.innerText = opt;
+                btn.onclick = () => answerGame(opt);
+                container.appendChild(btn);
+            });
+        }
+
+        function answerGame(selected) {
+            totalQuestions++;
+            if (selected === currentProblem.ans) {
+                playSound('correct');
+                gameScore += 10;
+                correctQuestions++;
+            } else {
+                playSound('wrong');
+                gameLives--;
+            }
+
+            updateHUD();
+
+            if (gameLives <= 0) {
+                endGame();
+            } else {
+                nextGameQuestion();
+            }
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            switchScreen('screen-game-over');
+
+            document.getElementById('final-score').innerText = gameScore;
+            const accuracy = totalQuestions > 0 ? Math.round((correctQuestions / totalQuestions) * 100) : 0;
+            document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+
+            if (gameScore >= 50) {
+                document.getElementById('game-over-icon').innerText = '🏆';
+                document.getElementById('game-over-title').innerText = 'Luar Biasa!';
+                document.getElementById('game-over-msg').innerText = 'Kamu adalah Jagoan Penjumlahan 1-20!';
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            } else {
+                document.getElementById('game-over-icon').innerText = '💪';
+                document.getElementById('game-over-title').innerText = 'Tetap Semangat!';
+                document.getElementById('game-over-msg').innerText = 'Terus berlatih penjumlahan ya, kamu pasti bisa!';
+            }
+        }
+    </script>
+</body>
+</html>
